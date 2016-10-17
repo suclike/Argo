@@ -36,24 +36,14 @@ public extension Decoded {
 
     This is useful for when a decode operation should be allowed to fail, such
     as when decoding an optional property.
-    It only returns a `.Failure` case if the error is `.TypeMismatch` or
-    `.Custom`. If the error was `.MissingKey`, it converts the failure into
-    `.Success(.None)`.
 
     - parameter x: A `Decoded` type
 
     - returns: The `Decoded` type with a `.TypeMismatch` failure converted to
-              `.Success(.None)`
+               `.Success(.None)`
   */
   static func optional<T>(_ x: Decoded<T>) -> Decoded<T?> {
-    switch x {
-    case let .success(value): return .success(.some(value))
-    case .failure(.missingKey): return .success(.none)
-    case let .failure(.typeMismatch(expected, actual)):
-      return .failure(.typeMismatch(expected: expected, actual: actual))
-    case let .failure(.custom(x)): return .failure(.custom(x))
-    case let .failure(.multiple(es)): return .failure(.multiple(es))
-    }
+    return .success(x.value)
   }
 
   /**
